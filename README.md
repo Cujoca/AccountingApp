@@ -77,6 +77,7 @@ AccountingApp is a Play Framework (Scala) web application that ingests transacti
 ## File upload behavior and validation
 
 - Filenames are expected to start with an account number followed by a dash, e.g. 12345-transactions.csv
+  - See TEST-activity.csv as an example, the accountNum (despite being called a num) can include alphas.
 - Client-side validation (app/views/files.scala.html)
   - On file selection, JavaScript extracts the prefix before the first '-' from each file and ensures all prefixes are identical.
   - If multiple prefixes are detected, selection is blocked with an alert and the file input is cleared. If exactly one prefix is found, the account field is auto-filled.
@@ -86,6 +87,9 @@ AccountingApp is a Play Framework (Scala) web application that ingests transacti
   - If more than one prefix is present, the request is redirected back to the form with a flash error message.
   - If an account number was submitted and it differs from the derived prefix, the upload is rejected with a flash error.
   - If validation passes, files are processed and a status page is displayed with computed totals and ticker mappings.
+ 
+### Important note regarding csv file structure
+This program is designed to parse through csv files provided by **TD bank**, you can see app/model/Resources/TEST-activity.csv as an example
 
 ## Important routes (conf/routes)
 
