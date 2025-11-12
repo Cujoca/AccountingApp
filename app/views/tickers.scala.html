@@ -1,0 +1,50 @@
+@import scala.collection.mutable
+@(tickers: mutable.HashMap[String, (String, String)])
+
+
+@main("see all tickers") {
+
+    @println(tickers)
+
+    <a href="/index"><button>back to menu</button></a>
+
+
+    <h1>See all stock data</h1>
+
+    <table id="myTable" class="display">
+        <thead>
+            <tr>
+                <th>Stock name</th>
+                <th>Ticker</th>
+                <th>Market</th>
+                <th>Edit</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            @tickers.map { ticker =>
+              <tr>
+                  <td>@ticker._1</td>
+                  @if(ticker._2._1.isEmpty) {
+                      <td>unknown, please edit and add a ticker</td>
+                  } else {
+                      <td>@ticker._2._1</td>
+                  }
+                  @if(ticker._2._2.isEmpty) {
+                      <td>unknown, please edit and add a market</td>
+                  } else {
+                      <td>@ticker._2._2</td>
+                  }
+                  <td><a href="stocks/@ticker._1/edit"><button>Edit info</button></a></td>
+              </tr>
+            }
+        </tbody>
+    </table>
+
+    <script>
+        let table = new DataTable('#myTable');
+        $(document).ready(function () {
+            $('#myTable').DataTable();
+        })
+    </script>
+}

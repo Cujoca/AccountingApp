@@ -1,0 +1,49 @@
+@import model.domain.Report
+@(accounts: Map[String, List[(String, String, Report)]])
+@main("display accounts") {
+    <h1>Accounts</h1>
+    <p>Total @{accounts.size} accounts!</p>
+    <a href="index"><button>go back to menu</button></a>
+
+    <h2>Each account's report on this page shows only the most recent month</h2>
+    <h2>If you wish to see a more comprehensive report, click the view full report button</h2>
+
+
+    @accounts.map { t =>
+      <h2>User: @t._1</h2>
+      <table id="myTable" class="display">
+          <thead>
+              <tr>
+              <th>Account Num</th>
+              <th>name</th>
+              <th>View Report</th>
+              <th>Total Orders</th>
+              <th>Buy Orders</th>
+              <th>Sell Orders</th>
+              <th>Edit Account</th>
+              </tr>
+          </thead>
+          <tbody>
+      @t._2.map { a =>
+              <tr>
+              <td>@a._1</td>
+              @if(Option(a._2).forall(_.isEmpty))  {<td>No name has been made for this account</td>}
+              @if(!Option(a._2).forall(_.isEmpty)) {<td>^@a._2^</td>}
+              <td><a href="accounts/@a._1/viewReport"><button>view full report</button></a></td>
+              <td>@a._3.buyOrder</td>
+              <td>@a._3.sellOrder</td>
+              <td>@a._3.otherOrder</td>
+              <td><a href="accounts/@a._1/edit"><button>edit</button></a></td>
+      </tr>
+      }
+      </tbody>
+      </table>
+    }
+
+    <script>
+        let table = new DataTable('#myTable');
+        $(document).ready(function () {
+            $('#myTable').DataTable();
+        })
+    </script>
+}

@@ -1,0 +1,89 @@
+@import model.domain.Report
+@import play.api.mvc.MessagesRequestHeader
+@import views.html.helper.form
+@(accountID: String, report: Map[String, Report], average: List[(String, Int, Boolean)], total: Int,
+        form: Form[AddTxnData])(implicit request: MessagesRequestHeader)
+
+@main("view report") {
+
+    <h1>Reports for account @accountID</h1>
+    <a href="/index"><button>go back to menu</button></a>
+    <a href="/accountNums"><button>view all accounts</button></a>
+
+
+    <table id="myTable" class="display">
+        <thead>
+            <th>YYYY/MM</th>
+            <th>Total Orders</th>
+            <th>Buy Orders</th>
+            <th>Sell Orders</th>
+            <th>Total Dividend Returns</th>
+        </thead>
+        <tbody>
+        @report.map { instance =>
+            <tr>
+                <td>@instance._1</td>
+                <td>@{instance._2.buyOrder+
+                instance._2.sellOrder}</td>
+                <td>@instance._2.buyOrder</td>
+                <td>@instance._2.sellOrder</td>
+                <td>@instance._2.profit</td>
+            </tr>
+        }
+        </tbody>
+    </table>
+
+    <h1>Stock Report</h1>
+
+    <div class="well">
+    <table id="averageTable" class="display">
+        <thead>
+            <th>Company</th>
+            <th>Average Holding Time (Days)</th>
+            <th>amount needed if bad</th>
+        </thead>
+
+        <tbody>
+        @average.map { a =>
+          <tr>
+              <td>
+                  <a href="viewStock/@a._1">@a._1</a>
+              </td>
+              <td>@a._2</td>
+              <td>@a._3</td>
+          </tr>
+        }
+        </tbody>
+    </table>
+    </div>
+
+    <h2>Total Average Average</h2>
+    <h3>@total</h3>
+
+    <h2>Add a transaction to balance out the average?</h2>
+
+    @helper.form(action = helper.CSRF(routes.Users_Controller.txnPost(accountID))) {
+        @helper.inputText(form("name"))
+        @helper.inputText(form("amount"))
+        @helper.inputText(form("date"))
+
+        @helper.CSRF.formField
+        <input type="submit" id="upload" value="add transaction"/>
+        @if(form.hasErrors){
+            @form.errors.mkString("<br>")
+            @form.errors.mkString("\n")
+        }
+    }
+
+    <script>
+        let table = new DataTable('#myTable');
+        $(document).ready(function () {
+            $('#myTable').DataTable();
+        })
+
+        let otherTable = new DataTable('#averageTable');
+        $(document).ready(function () {
+            $('#averageTable').DataTable();
+        })
+    </script>
+}

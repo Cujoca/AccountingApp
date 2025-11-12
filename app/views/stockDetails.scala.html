@@ -1,0 +1,49 @@
+@import scala.collection.mutable
+@(trades: List[(String, Double, Double)], stockName: String)
+
+
+
+@main("view details of stock") {
+
+    <h2>Now viewing details of stock @stockName</h2>
+
+    <h3>Earliest Trade:</h3>
+    <h4>@trades.last._2 stocks on @trades.last._1</h4>
+
+    <h3>Latest Trade:</h3>
+    <h4>@trades.head._2 stocks on @trades.head._1</h4>
+
+    <div class="well">
+    <table id="myTable" class="display">
+        <thead>
+            <tr>
+                <td>Trade Date</td>
+                <td>Quantity</td>
+                <td>Current holding</td>
+            </tr>
+        </thead>
+
+        <tbody>
+            @trades.map { trade =>
+                <tr>
+                    <td>@trade._1</td>
+                    <td>@{String.format("%f", trade._2)}</td>
+                    <td>@{String.format("%f", trade._3)}</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    </div>
+
+
+
+
+    <script>
+        let table = new DataTable('#myTable');
+        $(document).ready(function() {
+            $('#myTable').DataTable();
+        })
+    </script>
+
+
+}

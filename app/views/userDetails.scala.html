@@ -1,0 +1,55 @@
+@import scala.collection.mutable
+@import model.domain.Report
+@(userID: String, accounts: mutable.HashMap[(String, String), Report])
+
+@main("details of user") {
+
+    <h1>Details of user: @userID</h1>
+    <a href="/index"><button>go back to menu</button></a>
+    <a href="/users"><button>go back to users</button></a>
+
+    <p>There is a total of @{accounts.size} accounts!</p>
+
+
+    <table id="myTable" class="display">
+        <thead>
+            <tr>
+                <th>Account Num</th>
+                <th>name</th>
+                <th>View Report</th>
+                <th>Total Orders</th>
+                <th>Buy Orders</th>
+                <th>Sell Orders</th>
+                <th>Edit Account</th>
+            </tr>
+        </thead>
+        <tbody>
+        @accounts.map { a =>
+            <tr>
+                <td>@a._1._1</td>
+                @if(Option(a).isEmpty)  {<td>No name has been made for this account</td>}
+                @if(!Option(a).isEmpty) {<td>@a._1._2</td>}
+                <td><a href="accounts/@a._1._1/viewReport"><button>view full report</button></a></td>
+                <td>@a._2.buyOrder</td>
+                <td>@a._2.sellOrder</td>
+                <td>@a._2.otherOrder</td>
+                <td><a href="accounts/@a._1._1/edit"><button>edit</button></a></td>
+            </tr>
+        }
+        </tbody>
+    </table>
+
+    <script>
+        let table = new DataTable('#myTable');
+        $(document).ready(function () {
+            $('#myTable').DataTable();
+        })
+    </script>
+
+
+
+
+
+
+
+}

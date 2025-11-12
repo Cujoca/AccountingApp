@@ -1,0 +1,109 @@
+@import scala.collection.mutable
+@import model.domain.Report
+@import scala.collection.mutable
+@(fileStatus: Boolean, report: Array[(String, Map[String, Report])],
+        totalBuy: Int, totalSell: Int, totalOther: Int, totalNet: Double, tickers: mutable.HashMap[String, (String, String)])
+@main("file uploaded?") {
+    @if(fileStatus) {<h1>The file has been successfully uploaded!</h1>
+    }else {<h1>The file was not uploaded</h1>}
+    <a href="index"><button>go back to menu</button></a>
+    <a href="txns"><button>see transactions</button></a>
+
+    <h1>Transaction report:</h1>
+
+    <table>
+        <tr>
+            <th>Total buy orders</th>
+            <th>Total sell orders</th>
+            <th>Total other orders</th>
+            <th>Total net</th>
+        </tr>
+        <tr>
+            <td>@totalBuy</td>
+            <td>@totalSell</td>
+            <td>@totalOther</td>
+            <td>@totalNet</td>
+        </tr>
+    </table>
+
+    <h2>Transactions per file</h2>
+    @report.map { file =>
+            <h2>@file._1</h2>
+        <table id="@file._1.split('.')(0)" class="display">
+            <thead>
+                <th>Company</th>
+                <th>Buy Orders</th>
+                <th>Sell Orders</th>
+                <th>Other Orders</th>
+                <th>Total Stocks Sold</th>
+                <th>Total Stocks Bought</th>
+                <th>Net Stock Holding</th>
+                <th>Net revenue</th>
+            </thead>
+            <tbody>
+                @file._2.map { rep =>
+                    <tr>
+                        <td>@rep._1</td>
+                        <td>@rep._2.buyOrder</td>
+                        <td>@rep._2.sellOrder</td>
+                        <td>@rep._2.otherOrder</td>
+                        <td>@rep._2.totalSold</td>
+                        <td>@rep._2.totalBought</td>
+                        <td>@rep._2.getNet</td>
+                        <td>@rep._2.profit</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+
+    <h2>Stock Table</h2>
+    <table id="stockTable" class="display">
+        <thead>
+            <tr>
+                <th>Stock Name</th>
+                <th>Ticker</th>
+                <th>Link to edit</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            @tickers.map { ticker =>
+              <tr>
+                  <td>@ticker._1</td>
+                  @if(ticker._2._1.isEmpty) {
+                      <td>unknown</td>
+                  } else {
+                      <td>@ticker._2._1</td>
+                  }
+                  <td><a href="/stocks/@ticker._1/edit"><button>change stock ticker</button></a></td>
+              </tr>
+            }
+        </tbody>
+    </table>
+
+    <script>
+            let table = new DataTable('#myTable');
+            $(document).ready(function () {
+                $('#myTable').DataTable();
+            });
+
+            let otherTable = new DataTable('#stockTable');
+            $(document).ready(function () {
+                $('#stockTable').DataTable();
+            });
+
+            @report.map { file => {
+
+                let @{file._1.split('.')(0)} = new DataTable('#@{file._1.split('.')(0)}');
+                $(document).ready(function () {
+                    $('#@{file._1.split('.')(0)}').DataTable();
+                });
+            }
+            }
+
+
+    </script>
+
+
+}

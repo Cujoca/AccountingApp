@@ -1,0 +1,104 @@
+@import model.domain.Transaction
+@(txns:List[Transaction])
+    @moreHeaders = {
+        <link rel="stylesheet" href="https://cdn.datatables.net/2.3.3/css/dataTables.dataTables.css" />
+    }
+
+
+
+@main("Here are the transactions") {
+
+    <h1>Transactions</h1>
+    <a href="index"><button>Go back to main menu</button></a>
+
+    <table id="myTable" class="display">
+        <thead>
+        <tr>
+            <th>Order ID</th>
+            <th>Trade Date</th>
+            <th>Settle Date</th>
+            <th>Company</th>
+            <th>Action</th>
+            <th>Quantity</th>
+            <th>Price</th>
+            <th>Commission</th>
+            <th>Net</th>
+            <th>Company_RAW</th>
+            <th>Account Number</th>
+        </tr>
+        </thead>
+        <tbody>
+        @txns.map { t =>
+            <tr>
+                <td>@t.getID</td>
+                <td>@t.getTrade.toString</td>
+                <td>@t.getSettle.toString</td>
+                <td>@t.getCompany</td>
+                <td>@t.getAction</td>
+                <td>@t.getQuantity</td>
+                <td>@t.getPrice</td>
+                <td>@t.getCommission</td>
+                <td>@t.getNet</td>
+                <td>@t.getCompanyRAW</td>
+                <td>@t.getAccountNum</td>
+            </tr>
+        }
+        </tbody>
+        <tfoot>
+            <tr>
+                <th>Order ID</th>
+                <th>Trade Date</th>
+                <th>Settle Date</th>
+                <th>Company</th>
+                <th>Action</th>
+                <th>Quantity</th>
+                <th>Price</th>
+                <th>Commission</th>
+                <th>Net</th>
+                <th>Company_RAW</th>
+                <th>Account Number</th>
+            </tr>
+        </tfoot>
+
+    </table>
+
+    <script>
+
+        /*let table = new DataTable('#myTable');
+        $(document).ready(function () {
+            $('#myTable').DataTable();
+        });
+        */
+
+        let table = new DataTable('#myTable', {
+            initComplete: function () {
+
+                var r = $('#myTable tfoot tr');
+
+                r.find('th').each(function () {
+                    $(this).css('padding', 8);
+                });
+
+                $('#myTable thead').append(r);
+                $('#search_0').css('text-align', 'center');
+
+                this.api()
+                        .columns()
+                        .every(function () {
+                            let column = this;
+                            let title = column.footer().textContent;
+
+                            let input = document.createElement('input');
+                            input.placeholder = title;
+                            column.footer().replaceChildren(input);
+
+                            input.addEventListener('keyup', () => {
+                                if (column.search() !== this.value) {
+                                    column.search(input.value).draw();
+                                }
+                            });
+                        });
+            }
+        });
+    </script>
+}

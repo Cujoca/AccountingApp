@@ -1,0 +1,81 @@
+@import play.api.data.Form
+@import play.api.mvc.MessagesRequestHeader
+@import controllers.routes
+@(form: Form[controllers.FormData], accounts: List[String])(implicit request: MessagesRequestHeader)
+
+@main("Welcome to Play") {
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+
+  <h1>Upload File</h1>
+  <a href="index"><button>back to menu</button></a>
+
+  @if(request.flash.get("error").isDefined) {
+    <div style="color: red; margin: 10px 0;">
+      @request.flash.get("error").get
+    </div>
+  }
+
+  @helper.form(action = helper.CSRF(routes.FileUpload_Controller.upload()), Symbol("enctype") -> "multipart/form-data") {
+    @**helper.inputFile(form("name"))**@
+    <input type="file" multiple name="name" id="name" size="30">
+    @helper.inputText(form("accountNum"))
+    @helper.inputText(form("userID"))
+    @helper.CSRF.formField
+    <input type="submit" id="upload" value="upload file"/>
+  }
+
+  <script>
+          function fileSelect(e){
+            const files = e[0].files;
+            if (!files || files.length === 0) { return null; }
+            // Extract account numbers from all selected files
+            const accounts = Array.from(files)
+              .map(f => getAccountNum(f.name))
+              .filter(v => v && v.length > 0);
+            const unique = Array.from(new Set(accounts));
+            if (unique.length === 1) {
+              $("#accountNum").val(unique[0]);
+              return unique[0];
+            } else if (unique.length > 1) {
+              alert("Selected files belong to different accounts. Please select files from the same account only.");
+              // Clear the file input to enforce re-selection
+              e.val("");
+              return null;
+            }
+            return null;
+          }
+
+          function getAccountNum ( fileName ) {
+            return fileName.split('-')[0];
+          }
+
+          $( document ).ready(function() {
+            $("#name").on("change", function () {
+              console.log ("change eh:"+$( this ));
+              fileSelect($( this ));
+            });
+
+            // Validate on submit as well (defense in depth)
+            $("#upload").on("click", function (evt) {
+              const input = $("#name");
+              const files = input[0].files;
+              if (!files || files.length === 0) { return; }
+              const accounts = Array.from(files)
+                .map(f => getAccountNum(f.name))
+                .filter(v => v && v.length > 0);
+              const unique = Array.from(new Set(accounts));
+              if (unique.length > 1) {
+                evt.preventDefault();
+                alert("Upload blocked: files from different accounts detected.");
+                return false;
+              }
+              if (unique.length === 1) {
+                $("#accountNum").val(unique[0]);
+              }
+              return true;
+            });
+          });
+
+  </script>
+}

@@ -1,0 +1,39 @@
+# Routes
+# This file defines all application routes (Higher priority routes first)
+# https://www.playframework.com/documentation/latest/ScalaRouting
+# ~~~~
+
+# An example controller showing a sample home page
+GET     /                           controllers.HomeController.index()
+
+GET     /txns                       controllers.DB_Controller.txns()
+
+POST    /upload                     controllers.FileUpload_Controller.upload()
+
+GET     /files                      controllers.FileUpload_Controller.showFormUpdateFile()
+
+GET     /index                      controllers.HomeController.index()
+
+GET     /deletedBase                controllers.DB_Controller.deleteDB()
+GET     /deleteDB                   controllers.HomeController.askDelete()
+
+GET     /accountNums                                    controllers.Users_Controller.viewAccounts()
+GET     /users/:userID/accounts/:accountID/edit         controllers.Users_Controller.editAccount(userID: String, accountID: String)
+POST    /users/:userID/accounts/:accountID/editAccount  controllers.Users_Controller.userPost(userID: String, accountID:String)
+
+GET     /addedTxn                               controllers.Users_Controller.addedTxn(message: String, accountID: String)
+POST    /txns/addedTxn                          controllers.Users_Controller.txnPost(accountID)
+
+GET     /users                                                  controllers.Users_Controller.viewUsers()
+GET     /users/:userID/view                                     controllers.Users_Controller.viewUserDetail(userID: String)
+GET     /users/:userID/account/:accountID/viewReport            controllers.Users_Controller.viewReport(userID: String, accountID: String)
+GET     /users/:userID/accounts/:accountID/viewReport           controllers.Users_Controller.getAccountReport(userID: String, accountID:String)
+GET     /users/:userID/account/:accountID/viewStock/:stockName  controllers.Users_Controller.viewStockDetail(userID: String, accountID: String, stockName: String)
+
+GET     /stocks/:stockName/edit                 controllers.FileUpload_Controller.editStockTicker(stockName: String)
+POST    /stocks/:stockName/tickerStatus         controllers.FileUpload_Controller.tickerPost(stockName: String)
+GET     /tickers                                controllers.FileUpload_Controller.tickers()
+GET     /tickerStatus                           controllers.FileUpload_Controller.tickerStatus(arg: String)
+
+# Map static resources from the /public folder to the /assets URL path
+GET     /assets/*file               controllers.Assets.versioned(path="/public", file: Asset)

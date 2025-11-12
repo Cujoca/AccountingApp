@@ -1,0 +1,41 @@
+@import scala.collection.mutable
+@import scala.collection.mutable
+@(users: mutable.HashSet[String])
+
+@main("view all users") {
+
+    <h1>Users</h1>
+    <a href="index"><button>go back to menu</button></a>
+
+    <table id="myTable" class="display">
+        <thead>
+            <tr>
+                <th>User ID</th>
+                <th>view</th>
+            </tr>
+        </thead>
+
+        <tbody>
+        @users.map { user =>
+            <tr>
+                <td>@user</td>
+                <td><a href="/users/@user/view"><button>view details</button></a></td>
+            </tr>
+        }
+        </tbody>
+    </table>
+
+
+    <script>
+        let table = new DataTable('#myTable');
+        $(document).ready(function () {
+            $('#myTable').DataTable();
+        })
+    </script>
+
+
+
+
+
+
+}

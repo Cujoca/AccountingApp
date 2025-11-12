@@ -1,0 +1,50 @@
+@import play.api.data.Form
+@(stockName: String, stockData: (String, String, String), tickerForm: Form[controllers.TickerData])(implicit request: MessagesRequestHeader)
+
+@main("change the ticker") {
+
+    <h1>This is the page to change the ticker for a specific stock!</h1>
+
+    <a href="/tickers"><button>go back to all stocks</button></a>
+
+    <h1>current stock: @stockName</h1>
+    @if(stockData._2.isEmpty) {
+        <h2>ticker for stock is unknown</h2>
+    } else {
+        <h2>ticker is: @stockData._2</h2>
+    }
+
+    @if(stockData._3.isEmpty) {
+        <h2>market for stock is unknown</h2>
+    } else {
+        <h2>market is: @stockData._3</h2>
+    }
+
+    <h2>would you like to change any info about this stock?</h2>
+
+    @helper.form(action = helper.CSRF(routes.FileUpload_Controller.tickerPost(stockName))) {
+        @*
+        @helper.input(tickerForm("name")) { (id, name, value, args) =>
+          <input type="text" value="@stockName" name="@name" id="@id" @toHtmlArgs(args)>
+        }
+        *@
+
+        @helper.input(tickerForm("ticker")) { (id, name, value, args) =>
+            <input type="text" value="@stockData._2" name="@name" id="@id" @toHtmlArgs(args)>
+        }
+
+        @helper.input(tickerForm("market")) { (id, name, value, args) =>
+            <input type="text" value="@stockData._3" name="@name" id="@id" @toHtmlArgs(args)>
+        }
+
+          @helper.CSRF.formField
+          <input type="submit" id="upload" value="change info"/>
+
+          @tickerForm.errorsAsJson
+    }
+
+    <h2>Here is a link to a google search to help you find info about this stock</h2>
+    @defining(s"https://google.com/search?q=$stockName") { url =>
+      <a href="@url" target="_blank"><button>to google</button></a>
+    }
+}

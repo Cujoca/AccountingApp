@@ -1,0 +1,29 @@
+@import play.api.data.Form
+@import play.api.mvc.MessagesRequestHeader
+@import controllers.routes
+@import model.domain.Account
+@import views.html.helper.CSRF
+@(account: Account, form: Form[controllers.EditAccountData])(implicit request: MessagesRequestHeader)
+
+@main("Welcome to Play") {
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+
+  <h1>Account Info</h1>
+  <a href="/index"><button>back to menu</button></a>
+
+  <h2>Account Num:</h2>
+  <h3>@account.accountID</h3>
+  <h2>User ID:</h2>
+  <h3>@account.userID</h3>
+
+  @helper.form(action = routes.Users_Controller.userPost(account.userID, account.accountID)) {
+      @helper.input(form("name")) { (id, name, value, args) =>
+            <input type="text" value="@account.name" name="@name" id="@id" @toHtmlArgs(args)>
+    }
+    @helper.CSRF.formField
+    <input type="submit" id="upload" value="change name"/>
+
+      @form.errorsAsJson
+  }
+}
