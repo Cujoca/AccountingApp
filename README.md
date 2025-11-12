@@ -53,7 +53,7 @@ AccountingApp is a Play Framework (Scala) web application that ingests transacti
 
    - Option A: Edit app.properties with your JDBC URL (development use only):
      - create a file named app.properties in the root directory of the project
-     - app.properties
+     - within app.properties, add the following line:
      - DB_URL = "jdbc:postgresql://HOST:PORT/DB?user=USER&password=PWD&sslmode=require"
 
    - Option B: Use environment variables (recommended for production):
